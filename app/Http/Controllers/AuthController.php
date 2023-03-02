@@ -18,7 +18,6 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        // Validate request data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users|max:255',
@@ -29,17 +28,14 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        // Create new user
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
         ]);
 
-        // Generate JWT token
         $token = $user->createToken('authToken')->accessToken;
 
-        // Return response with JWT token
         return response()->json(['token' => $token], 201);
     }
 
@@ -51,7 +47,6 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // Validate request data
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
@@ -61,16 +56,13 @@ class AuthController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        // Attempt authentication
         if (!Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
             return response()->json(['error' => 'Invalid email or password'], 401);
         }
 
-        // Generate JWT token
         $user = Auth::user();
         $token = JWTAuth::fromUser($user);
 
-        // Return response with JWT token
         return response()->json(['token' => $token, 'user' => $user->only(['email', 'name'])], 200);
     }
 
@@ -82,7 +74,6 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        //$request->user()->token()->revoke();
         JWTAuth::invalidate($request);
         return response()->json(['message' => 'Successfully logged out'], 200);
     }
@@ -109,10 +100,8 @@ class AuthController extends Controller
      */
     public function me(Request $request)
     {
-        // Get authenticated user
         $user = $request->user();
 
-        // Return user information
         return response()->json(['user' => $user->only(['email', 'name'])], 200);
     }
 
