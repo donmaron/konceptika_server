@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -66,10 +67,11 @@ class AuthController extends Controller
         }
 
         // Generate JWT token
-        $token = Auth::user()->createToken('authToken')->accessToken;
+        $user = Auth::user();
+        $token = JWTAuth::fromUser($user);
 
         // Return response with JWT token
-        return response()->json(['token' => $token], 200);
+        return response()->json(['token' => $token, 'user' => $user->only(['email', 'name'])], 200);
     }
 
     /**
@@ -110,7 +112,7 @@ class AuthController extends Controller
         $user = $request->user();
 
         // Return user information
-        return response()->json(['user' => $user], 200);
+        return response()->json(['user' => $user->only(['email', 'name'])], 200);
     }
 
 }
