@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -19,5 +20,6 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('/products/add', [ProductController::class, 'store']);
     Route::put('/products/edit/{product}', [ProductController::class, 'update']);
     Route::delete('/products/delete/{product}', [ProductController::class, 'destroy']);
+    Route::get('/categories', [CategoryController::class, 'index']);
 
 });

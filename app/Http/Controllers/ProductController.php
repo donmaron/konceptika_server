@@ -9,7 +9,9 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->get();
+        $products = Product::with(['category' => function ($query) {
+            $query->select('id', 'name');
+        }])->get();
 
         return response()->json([
             'success' => true,
@@ -40,7 +42,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load('category');
+        $product->load('category:id,name');
 
         return response()->json([
             'success' => true,
