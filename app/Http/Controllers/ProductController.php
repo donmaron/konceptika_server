@@ -26,7 +26,7 @@ class ProductController extends Controller
         ]);
 
         $product = Product::create([
-            'uuid' => \Illuminate\Support\Str::uuid(),
+            'uuid' => generateUuid(16),
             'name' => $validatedData['name'],
             'price' => $validatedData['price'],
             'category_id' => $validatedData['category_id'],
